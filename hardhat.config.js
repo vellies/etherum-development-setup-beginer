@@ -16,6 +16,51 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 /**
  * @type import('hardhat/config').HardhatUserConfig
  */
+
+// Vellies Start
+require("@nomiclabs/hardhat-web3");
+
+task("balance", "Prints an account's balance")
+  .addParam("account", "The account's address")
+  .setAction(async (taskArgs) => {
+    const account = web3.utils.toChecksumAddress(taskArgs.account);
+    const balance = await web3.eth.getBalance(account);
+
+    console.log(web3.utils.fromWei(balance, "ether"), "ETH");
+  });
+
+  task("hello", "Prints 'Hello, World!'", async () => {
+    console.log("Hello, World!");
+  });
+
+// Vellies End
 module.exports = {
-  solidity: "0.8.4",
+  defaultNetwork: "rinkeby",
+  networks: {
+    hardhat: {
+    },
+    rinkeby: {
+      url: "https://eth-rinkeby.alchemyapi.io/v2/123abc123abc123abc123abc123abcde",
+      accounts: [privateKey1, privateKey2]
+    }
+  },
+  solidity: {
+    version: "0.8.4",
+    settings: {
+      optimizer: {
+        enabled: true,
+        runs: 200
+      }
+    }
+  },
+  paths: {
+    sources: "./contracts",
+    tests: "./test",
+    cache: "./cache",
+    artifacts: "./artifacts"
+  },
+  mocha: {
+    timeout: 40000
+  }
 };
+
